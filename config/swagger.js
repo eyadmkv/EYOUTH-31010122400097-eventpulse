@@ -11,7 +11,7 @@ const options = {
     },
     servers: [
       { url: 'http://localhost:3000', description: 'Local Development' },
-      { url: 'https://your-vercel-url.vercel.app', description: 'Production (Update this later)' }
+      { url: 'https://eyouth-31010122400097-eventpulse.vercel.app/', description: 'Production (Update this later)' }
     ],
     components: {
       securitySchemes: {
