@@ -4,7 +4,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const morgan = require('morgan');
 const mongoSanitize = require('express-mongo-sanitize');
-const connectDB = require('./config/db');
+const { connectDB, getDBStatus } = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 const mongoose = require('mongoose');
 const swaggerUi = require('swagger-ui-express');
@@ -25,14 +25,15 @@ app.use(mongoSanitize());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get('/health', (req, res) => {
-  const dbState =
-    mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
-
-  res.status(200).json({
-    status: 'ok',
-    env: process.env.NODE_ENV,
-    uptime: process.uptime(),
-    db: dbState
+  const state = mongoose.connection.readyState;
+  const dbState = state === 1 ? 'connected' : 'disconnected';
+  
+  res.status(200).json({ 
+    status: 'ok', 
+    env: process.env.NODE_ENV, 
+    uptime: process.uptime(), 
+    db: getDBStatus(),
+    readyState: state 
   });
 });
 
