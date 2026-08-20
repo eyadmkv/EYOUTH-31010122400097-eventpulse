@@ -1,22 +1,27 @@
 const mongoose = require('mongoose');
 
 let isConnected = false;
+let connectionError = null;
 
 async function connectDB() {
   if (isConnected) return;
   
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    isConnected = true; 
+    isConnected = true;
+    connectionError = null;
     console.log('✓ MongoDB connected');
   } catch (err) {
     console.error('MongoDB connection error:', err.message);
-    throw new Error('Database connection failed');
+    connectionError = err.message; // Save the exact error message
   }
 }
 
 function getDBStatus() {
-  return isConnected ? 'connected' : 'disconnected';
+  return {
+    status: isConnected ? 'connected' : 'disconnected',
+    error: connectionError
+  };
 }
 
 module.exports = { connectDB, getDBStatus };

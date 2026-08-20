@@ -25,15 +25,15 @@ app.use(mongoSanitize());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get('/health', (req, res) => {
-  const state = mongoose.connection.readyState;
-  const dbState = state === 1 ? 'connected' : 'disconnected';
+  const dbInfo = getDBStatus();
   
   res.status(200).json({ 
     status: 'ok', 
     env: process.env.NODE_ENV, 
     uptime: process.uptime(), 
-    db: getDBStatus(),
-    readyState: state 
+    db: dbInfo.status,
+    dbError: dbInfo.error, 
+    mongoUriLoaded: process.env.MONGO_URI ? 'Yes' : 'NO - MISSING IN VERCEL!' 
   });
 });
 
